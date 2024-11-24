@@ -1,48 +1,34 @@
-import { useEffect } from "react";
-import useInput from "../composables/useInput";
-import useKeyboard from "../composables/useKeyboard";
-
-export interface IModel {
-  title: string;
-  text: string;
-}
+import { useEffect, useState } from "react";
+import useDebounce from "../composables/useDebounce";
 
 export interface IProps {
-  model: IModel;
-  onChange: (value: IModel) => void;
+  model: string;
+  delay: number;
+  onChange: (value: string) => void;
 }
 
-function STextarea({ onChange, model }: IProps) {
-  let textarea: HTMLTextAreaElement | null = null;
+function STextarea(props: IProps) {
+  const { onChange, model, delay } = props;
 
-  const inputProps = useInput(model.title);
-  const textProps = useInput(model.text);
+  const [value, setValue] = useState(model);
 
-  const inputKeyboard = useKeyboard({
-    Enter: { action: () => textarea?.focus() },
-  });
+  const debouncedInputValue = useDebounce(value, delay);
 
   useEffect(() => {
-    if (!onChange) return;
-    onChange({ title: inputProps.value, text: textProps.value });
-  }, [onChange, inputProps.value, textProps.value]);
+    if (debouncedInputValue) {
+      onChange(debouncedInputValue)
+    }
+  }, [debouncedInputValue]);
 
   return (
-    <>
-      <h3> Write your notes </h3>
-      <input
-        placeholder="Note Title"
-        className="w-full h-full mt-2 px-2 py-4 rounded-t-lg focus:outline-none"
-        {...inputKeyboard}
-        {...inputProps}
-      />
+    <div>
       <textarea
-        ref={(input) => (textarea = input)}
-        placeholder="Add you note"
+        placeholder="Add your note"
         className="w-full h-full px-2 py-4 rounded-b-lg focus:outline-none"
-        {...textProps}
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
       />
-    </>
+    </div>
   );
 }
 

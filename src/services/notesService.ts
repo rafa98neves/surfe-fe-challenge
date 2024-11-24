@@ -17,11 +17,7 @@ export default class NotesService {
   }
 
   async setNote(data: INote) {
-    const payload = {
-      ...data,
-      body: data.body.text
-    }
-    return await this.service.post<INote>("notes", payload);
+    return await this.service.post<INote>("notes", data);
   }
 
   async updateNote(id: number, data: INote) {

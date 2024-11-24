@@ -12,6 +12,9 @@ function reducer(state = initialState, action: IAction) {
     case ACTION_TYPE.SET_NOTES:
       return { ...state, notes: action.payload };
 
+    case ACTION_TYPE.UPDATE_NOTE:
+      return { ...state, notes: state.notes.map(note => note.id === action.payload.id ? action.payload : note) };
+
     case ACTION_TYPE.SET_LOADING:
       return { ...state, loading: action.payload };
 

@@ -16,6 +16,7 @@ export interface IAction {
 
 export enum ACTION_TYPE {
   ADD_NOTE,
+  UPDATE_NOTE,
   SET_NOTES,
 
   SET_USERS,

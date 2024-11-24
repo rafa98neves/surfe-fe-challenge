@@ -1,30 +1,32 @@
 import { useState } from "react";
-import STextarea, { IModel } from "../components/STextarea";
-import { useAppDispatch } from "../store/reducers";
-import { addNote } from "../store/actions";
-import useSession from "../composables/useSession";
+import STextarea from "../components/STextarea";
+import useStore from "../store";
+import { INote } from "../types/notes";
 
-const DEFAULT_MODEL: IModel = { text: "", title: "" };
 
 function NotesCreation() {
-  const { session } = useSession();
-  const dispatch = useAppDispatch();
+  const store = useStore()
 
-  const [model, onChange] = useState<IModel>(DEFAULT_MODEL);
+  const [model, setModel] = useState('');
+  const [note, setNote] = useState<INote | null>(null);
 
-  const onSubmit = () => {
-    const newNote = {
-      id: 1,
-      body: model
+  async function onChange(value: string) {
+    let newNote
+
+    if (note) {
+      newNote = await store.updateNote(note.id, value);
+    } else {
+      newNote = await store.addNote(value)
     }
 
-    addNote(newNote, session, dispatch);
+    setNote(newNote)
+    setModel(value);
   }
 
   return (
     <div className="w-full h-full bg-gray-50 rounded-lg px-4 py-6">
-      <STextarea model={model} onChange={onChange} />
-      <button onClick={onSubmit}> Submit </button>
+      <h3> Write your notes </h3>
+      <STextarea model={model} onChange={onChange} delay={600} />
     </div>
   );
 }
