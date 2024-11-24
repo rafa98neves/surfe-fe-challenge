@@ -1,34 +1,29 @@
 import { useEffect, useState } from "react";
-import useDebounce from "../composables/useDebounce";
 
 export interface IProps {
   model: string;
-  delay: number;
   onChange: (value: string) => void;
 }
 
 function STextarea(props: IProps) {
-  const { onChange, model, delay } = props;
+  const { onChange, model } = props;
 
-  const [value, setValue] = useState(model);
+  const [value, setValue] = useState('');
 
-  const debouncedInputValue = useDebounce(value, delay);
+  const onModelChange = (value: string) => {
+    setValue(value);
+    onChange(value)
+  }
 
-  useEffect(() => {
-    if (debouncedInputValue) {
-      onChange(debouncedInputValue)
-    }
-  }, [debouncedInputValue]);
+  useEffect(() => setValue(model), [model])
 
   return (
-    <div>
-      <textarea
-        placeholder="Add your note"
-        className="w-full h-full px-2 py-4 rounded-b-lg focus:outline-none"
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-      />
-    </div>
+    <textarea
+      placeholder="Add your note"
+      className="w-full h-full px-2 py-4 rounded-lg resize-none	h-full focus:outline-none"
+      value={value}
+      onChange={(e) => onModelChange(e.target.value)}
+    />
   );
 }
 

@@ -39,6 +39,16 @@ export default function useStore() {
         }
     }
 
+    const fetchNote = async (id: number) => {
+        dispatch({ type: ACTION_TYPE.SET_LOADING, payload: true });
+        try {
+            const note = await notesService.getNote(id);
+            return note
+        } finally {
+            dispatch({ type: ACTION_TYPE.SET_LOADING, payload: false });
+        }
+    }
+
     const fetchNotes = async () => {
         dispatch({ type: ACTION_TYPE.SET_LOADING, payload: true });
 
@@ -51,5 +61,5 @@ export default function useStore() {
         }
     }
 
-    return { ...state, addNote, updateNote, fetchNotes }
+    return { ...state, addNote, updateNote, fetchNote, fetchNotes }
 }
