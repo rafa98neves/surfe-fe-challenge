@@ -2,9 +2,9 @@ const headers = { "Content-Type": "application/json" };
 
 export default class Service {
   baseUrl: string;
-  session: string;
+  session?: string;
 
-  constructor(session: string) {
+  constructor(session?: string) {
     const baseUrl = process.env.REACT_APP_API_URL;
 
     if (!baseUrl) {
@@ -16,6 +16,10 @@ export default class Service {
   }
 
   _buildUrl(endpoint: string) {
+    if (!this.session) {
+      return `${this.baseUrl}/${endpoint}`
+    }
+
     return `${this.baseUrl}/${this.session}/${endpoint}`;
   }
 

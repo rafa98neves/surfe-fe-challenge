@@ -15,7 +15,7 @@ function NotesList() {
   }
 
   useEffect(() => {
-    fetchNotes()
+    fetchNotes(true)
   }, [])
 
 

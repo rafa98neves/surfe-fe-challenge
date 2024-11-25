@@ -1,8 +1,9 @@
 import { INote } from "../types/notes";
+import { IUser } from "../types/users";
 
 export interface IState {
   notes: INote[];
-  users: any[];
+  users: IUser[];
 
   session: string | null,
 

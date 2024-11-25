@@ -1,13 +1,14 @@
 import Service from ".";
+import { IUser } from "../types/users";
 
 export default class UsersService {
   service;
 
-  constructor(session: string) {
-    this.service = new Service(session);
+  constructor() {
+    this.service = new Service();
   }
 
   async getUsers() {
-    return await this.service.get(`users`);
+    return await this.service.get<IUser[]>(`users`);
   }
 }

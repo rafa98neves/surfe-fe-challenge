@@ -1,15 +1,15 @@
 export interface KeyboardConfig {
-  action: () => void;
+  action: (e: React.KeyboardEvent) => void;
   prevent?: boolean;
 }
 
 export default function useKeyboard(config: Record<string, KeyboardConfig>) {
   function onKeyDown(e: React.KeyboardEvent) {
-    const focusConfig = config[e.key];
+    const focusConfig = config[e.key] ?? config['*'];
 
     if (focusConfig) {
-      if (focusConfig.prevent !== false) e.preventDefault();
-      focusConfig.action();
+      if (focusConfig.prevent === true) e.preventDefault();
+      focusConfig.action(e);
     }
   }
 

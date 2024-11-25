@@ -1,24 +1,27 @@
 import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 
 import STextarea from "../components/STextarea";
-import useStore from "../store";
-import { INote } from "../types/notes";
-import useDebounce from "../composables/useDebounce";
 import Spinner from "../icons/Spinner";
-import { Link, useParams } from "react-router-dom";
+import useStore from "../store";
+import { INote, ISegment } from "../types/notes";
+import useDebounce from "../composables/useDebounce";
+import { transformSegmentsToText, transformTextToSegments } from "../helpers";
 
 const SAVE_DELAY = 500
 
 function NotesCreation() {
-  const [model, setModel] = useState('');
+  const [segments, setSegments] = useState<ISegment[]>([]);
   const [note, setNote] = useState<INote | null>(null);
 
   const store = useStore()
   const params = useParams()
-  const debouncedInputValue = useDebounce(model, SAVE_DELAY);
+  const debouncedInputValue = useDebounce(segments, SAVE_DELAY);
 
   const onChange = async (value: string) => {
-    let newNote
+    if (!note) return
+
+    let newNote: INote;
 
     if (note) {
       newNote = await store.updateNote(note.id, value);
@@ -31,18 +34,21 @@ function NotesCreation() {
 
   useEffect(() => {
     if (debouncedInputValue) {
-      onChange(debouncedInputValue)
+      const text = transformSegmentsToText(debouncedInputValue, store.users)
+      onChange(text)
     }
   }, [debouncedInputValue])
 
   useEffect(() => {
     if (params.id) {
-      store.fetchNote(parseInt(params.id)).then(note => {
-        if (note) {
-          setModel(note.body)
-          setNote(note)
-        }
-      })
+      Promise.all([store.fetchNote(parseInt(params.id)), store.fetchUsers()])
+        .then(([note, users]) => {
+          if (note) {
+            const segments = transformTextToSegments(note.body, users)
+            setSegments(segments)
+            setNote(note)
+          }
+        })
     }
   }, [])
 
@@ -55,9 +61,10 @@ function NotesCreation() {
 
   return (
     <div className="h-full min-h-96">
+
       <div className="h-full grid grid-rows-10 bg-white rounded-lg pb-2">
         <div className="row-span-9">
-          <STextarea model={model} onChange={setModel} />
+          <STextarea segments={segments} onChange={setSegments} />
         </div>
         {statusMessage}
       </div>
