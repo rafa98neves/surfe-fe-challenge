@@ -1,5 +1,5 @@
 import Service from ".";
-import { IUser } from "../types/users";
+import { IRawUser } from "../types/users";
 
 export default class UsersService {
   service;
@@ -9,6 +9,6 @@ export default class UsersService {
   }
 
   async getUsers() {
-    return await this.service.get<IUser[]>(`users`);
+    return await this.service.get<IRawUser[]>(`users`);
   }
 }

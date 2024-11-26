@@ -1,7 +1,7 @@
 import { createContext, Dispatch, useContext, useReducer } from "react";
 import { ACTION_TYPE, IAction, IState } from "./types";
 
-const initialState: IState = { notes: [], users: [], session: null, loading: false };
+const initialState: IState = { notes: [], users: new Map(), session: null, loading: false };
 
 function reducer(state = initialState, action: IAction) {
   switch (action.type) {

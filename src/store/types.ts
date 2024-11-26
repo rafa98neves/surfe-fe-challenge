@@ -1,9 +1,9 @@
 import { INote } from "../types/notes";
-import { IUser } from "../types/users";
+import { TUserMap } from "../types/users";
 
 export interface IState {
   notes: INote[];
-  users: IUser[];
+  users: TUserMap;
 
   session: string | null,
 

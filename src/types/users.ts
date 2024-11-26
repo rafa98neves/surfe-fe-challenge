@@ -1,4 +1,11 @@
+export type TUserMap = Map<string, IUser>
+
 export interface IUser {
+    fullname: string,
+    username: string,
+}
+
+export interface IRawUser {
     birthdate: number,
 
     email: string,

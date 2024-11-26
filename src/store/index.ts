@@ -1,16 +1,21 @@
 import useSession from "../composables/useSession";
+import { parseUserResponse } from "../helpers/parsers";
 import NotesService from "../services/notesService";
 import UsersService from "../services/usersService";
-import { IUser } from "../types/users";
+import { TUserMap } from "../types/users";
 import { useAppDispatch, useAppState } from "./reducers";
 import { ACTION_TYPE } from "./types";
 
-const filterUsers = (users: IUser[], query: string, size = 5) => {
-    if (!query) return users.slice(0, size)
+const filterUsers = (users: TUserMap, query: string, size = 5) => {
+    let userArray = Array.from(users.entries());
 
-    return users.filter(user => {
-        return user.username.toLowerCase().includes(query.toLowerCase())
-    }).slice(0, size)
+    if (query) {
+        userArray = userArray.filter(user => {
+            return user[0].toLowerCase().includes(query.toLowerCase())
+        });
+    }
+
+    return new Map(userArray.slice(0, size))
 }
 
 export default function useStore() {
@@ -81,10 +86,12 @@ export default function useStore() {
         dispatch({ type: ACTION_TYPE.SET_LOADING, payload: true });
 
         try {
-            if (state.users.length > 0 && !force) return filterUsers(state.users, query)
+            if (state.users.size > 0 && !force) {
+                return filterUsers(state.users, query)
+            }
 
-            let users = await usersService.getUsers();
-            users = users.sort((a, b) => a.first_name.localeCompare(b.first_name));
+            const res = await usersService.getUsers();
+            const users = parseUserResponse(res);
 
             dispatch({ type: ACTION_TYPE.SET_USERS, payload: users });
 

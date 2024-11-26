@@ -34,22 +34,27 @@ function NotesCreation() {
 
   useEffect(() => {
     if (debouncedInputValue) {
-      const text = transformSegmentsToText(debouncedInputValue, store.users)
+      const text = transformSegmentsToText(debouncedInputValue)
       onChange(text)
     }
   }, [debouncedInputValue])
 
   useEffect(() => {
-    if (params.id) {
-      Promise.all([store.fetchNote(parseInt(params.id)), store.fetchUsers()])
-        .then(([note, users]) => {
-          if (note) {
-            const segments = transformTextToSegments(note.body, users)
-            setSegments(segments)
-            setNote(note)
-          }
-        })
+    // Initialize new note
+    if (!params.id) {
+      setSegments([{ text: '' }])
+      return
     }
+
+    // Fetch new note from ID
+    Promise.all([store.fetchNote(parseInt(params.id)), store.fetchUsers()])
+      .then(([note, users]) => {
+        if (note) {
+          const segments = transformTextToSegments(note.body, users)
+          setSegments(segments)
+          setNote(note)
+        }
+      })
   }, [])
 
   const statusMessage = (
@@ -69,9 +74,9 @@ function NotesCreation() {
         {statusMessage}
       </div>
 
-      <div className="flex items-center justify-center">
-        <button className="text-center bg-white px-6 py-1 rounded mt-4">
-          <Link to="/">Go back</Link>
+      <div className="flex items-center justify-end">
+        <button className="bg-white rounded mt-4">
+          <Link className="block px-6 py-1" to="/">Go to your notes</Link>
         </button>
       </div>
     </div>

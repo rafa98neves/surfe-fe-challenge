@@ -1,5 +1,5 @@
 import { ISegment } from "../types/notes";
-import { IUser } from "../types/users";
+import { TUserMap } from "../types/users";
 
 export function getWordFromIndex(sentence: string, index: number) {
     const words = sentence.split(' ');
@@ -18,7 +18,7 @@ export function getWordFromIndex(sentence: string, index: number) {
 
 const MENTION_REGEX = /(\s*@\w+\s*)/g;
 
-export function transformTextToSegments(text: string, users: IUser[]) {
+export function transformTextToSegments(text: string, users: TUserMap) {
     const segments: ISegment[] = [];
 
     let match = MENTION_REGEX.exec(text);
@@ -36,7 +36,7 @@ export function transformTextToSegments(text: string, users: IUser[]) {
 
         // Try to get mention
         word = match[0].trim()
-        const userMention = users.find(user => user.username === word.slice(1));
+        const userMention = users.get(word.slice(1));
         if (userMention) {
             if (previousSegment) segments.push(previousSegment);
             segments.push({ text: word, userMention });
@@ -52,10 +52,14 @@ export function transformTextToSegments(text: string, users: IUser[]) {
         segments.push({ text: word });
     }
 
+    if (segments[segments.length - 1].userMention) {
+        segments.push({ text: '' })
+    }
+
     return segments.filter(Boolean);
 }
 
-export function transformSegmentsToText(segments: ISegment[], users: IUser[]) {
+export function transformSegmentsToText(segments: ISegment[]) {
     let out: string[] = [];
 
     segments.forEach(segment => {

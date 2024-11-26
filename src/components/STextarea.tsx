@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import useStore from "../store";
 import STextSegment from "./STextSegment";
@@ -18,21 +18,22 @@ function STextarea(props: IProps) {
 
   const sel = getSelection();
 
+  const segRefs: any[] = []
+
   const [lastCursor, setLastCursor] = useState<number>(0)
   const [lastSegment, setLastSegment] = useState<number>(0)
   const [users, setUsers] = useState<IItem[]>([])
   const [sidePanelVisible, setVisibleToggle] = useState(false)
 
   const setUser = (username: string) => {
-    if (!sel) return
+    const user = store.users.get(username);
+
+    if (!sel || !user) return
 
     const foundSegment = segments[lastSegment]
-
     const wordData = getWordFromIndex(foundSegment.text, lastCursor)
 
-    const user = store.users.find(user => user.username === username);
-    if (!user) return
-    let newSegment = { text: `${user.first_name} ${user.last_name}`, userMention: user }
+    let newSegment = { text: user.fullname, userMention: user }
 
     if (!wordData) {
       segments.splice(lastSegment, 0, newSegment)
@@ -64,13 +65,24 @@ function STextarea(props: IProps) {
     }
 
     store.fetchUsers(word.slice(1)).then(users => {
-      setVisibleToggle(true)
-      setUsers(users.map((user) => {
+      const userArray = Array.from(users.entries())
+      const userOptions = userArray.map(([username, user]) => {
         return {
-          label: `${user.first_name} ${user.last_name}`, afterLabel: `@${user.username}`, value: user.username
+          label: user.fullname, afterLabel: `@${username}`,
+          value: username
         }
-      }))
+      })
+      setUsers(userOptions)
+      setVisibleToggle(true)
     })
+  }
+
+  const selectSegment = (index?: number) => {
+
+    if (!index) {
+      // TODO remake
+      segRefs[segRefs.length - 1]?.current.focus()
+    }
   }
 
   const changeSegment = (segment: ISegment, index: number) => {
@@ -83,10 +95,10 @@ function STextarea(props: IProps) {
   }
 
   return (
-    <div className="relative w-full h-full px-2 py-4 rounded-lg resize-none	h-full focus:outline-none">
+    <div className="relative w-full h-full px-2 py-4 rounded-lg resize-none	h-full focus:outline-none" onClick={() => selectSegment()}>
       <p>
         {segments.map((segment, index) => (
-          <STextSegment key={index} segment={segment} onChange={(e) => changeSegment(e, index)} />
+          <STextSegment setRef={(e) => segRefs[index] = e} key={index} segment={segment} onSegmentChange={(e) => changeSegment(e, index)} />
         ))}
       </p>
 
