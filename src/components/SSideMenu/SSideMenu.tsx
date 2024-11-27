@@ -46,7 +46,7 @@ const SSideMenu = (props: IProps) => {
     ))
 
     return (
-        <div className="absolute left-0 top-7 w-80 border border-t-grey bg-white rounded">
+        <div className="absolute left-0 top-10 w-80 border border-t-grey bg-white rounded">
             <div> {itemComponents} </div>
         </div>
     );

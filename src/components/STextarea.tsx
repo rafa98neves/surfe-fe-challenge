@@ -95,7 +95,7 @@ function STextarea(props: IProps) {
   }
 
   return (
-    <div className="relative w-full h-full px-2 py-4 rounded-lg resize-none	h-full focus:outline-none" onClick={() => selectSegment()}>
+    <div className="relative cursor-text w-full h-full p-4 rounded-lg resize-none	h-full focus:outline-none" onClick={() => selectSegment()}>
       <p>
         {segments.map((segment, index) => (
           <STextSegment setRef={(e) => segRefs[index] = e} key={index} segment={segment} onSegmentChange={(e) => changeSegment(e, index)} />

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 import STextarea from "../components/STextarea";
 import Spinner from "../icons/Spinner";
@@ -16,17 +16,17 @@ function NotesCreation() {
 
   const store = useStore()
   const params = useParams()
+  const navigate = useNavigate();
   const debouncedInputValue = useDebounce(segments, SAVE_DELAY);
 
   const onChange = async (value: string) => {
-    if (!note) return
-
     let newNote: INote;
 
     if (note) {
       newNote = await store.updateNote(note.id, value);
     } else {
       newNote = await store.addNote(value)
+      navigate(`/${newNote.id}`, { replace: true });
     }
 
     setNote(newNote)
