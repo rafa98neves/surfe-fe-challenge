@@ -7,7 +7,7 @@ import { getWordFromIndex } from "../helpers";
 export interface IProps {
   segment: ISegment;
   onSegmentChange: (value: ISegment) => void;
-  onCreate: (segment: ISegment, focus?: boolean) => void
+  onCreate: (segment: ISegment, offset?: number) => void
 }
 
 
@@ -51,19 +51,18 @@ function STextSegment(props: IProps) {
     let newSegment = { text: user.fullname, userMention: user }
 
     const text = segment.text.slice(wordData.end)
+
     onSegmentChange({ text: segment.text.slice(0, wordData.start) })
+    onCreate(newSegment, 1);
+    onCreate({ text }, 2);
 
-    onCreate(newSegment);
-
-    if (text.length) {
-      onCreate({ text }, true)
-    }
+    setVisibleToggle(false)
   }
 
   const onModelChange = (value: string = '') => {
     checkMention(value);
-    if (segment.userMention && sel!.focusOffset === segment.text.length - 1) {
-      onCreate({ text: '' });
+    if (segment.userMention && sel!.focusOffset === segment.text.length + 1) {
+      onCreate({ text: '' }, 1);
     } else {
       onSegmentChange({ text: value })
     }
@@ -85,7 +84,7 @@ function STextSegment(props: IProps) {
         ref={inputRef}
         contentEditable={true}
         id="editable-span"
-        className={`px-0.5 w-full h-full rounded-lg resize-none	h-full focus:outline-none ${segment.userMention ? 'cursor-pointer font-bold text-indigo-500' : ''}`}
+        className={`w-full h-full rounded-lg resize-none	h-full focus:outline-none ${segment.userMention ? 'cursor-pointer font-bold text-indigo-500' : ''}`}
         onInput={(e) => onModelChange(e.currentTarget.innerText ?? '')}
         onBlur={() => setVisibleToggle(false)}
       />

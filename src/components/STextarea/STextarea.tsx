@@ -17,16 +17,14 @@ function STextarea(props: IProps) {
     onChange(segments)
   }
 
-  const createSegment = (segment: ISegment, index: number, shouldFocus = true) => {
+  const createSegment = (segment: ISegment, index: number) => {
     segments.splice(index + 1, 0, segment);
     onChange(segments)
 
-    if (shouldFocus) {
-      setTimeout(() => {
-        const spans = document.querySelectorAll<HTMLInputElement>('#editable-span')
-        spans[index + 1]?.focus()
-      })
-    }
+    setTimeout(() => {
+      const spans = document.querySelectorAll<HTMLInputElement>('#editable-span')
+      spans[index + 1]?.focus()
+    })
   }
 
   return (
@@ -40,7 +38,7 @@ function STextarea(props: IProps) {
           key={index}
           segment={segment}
           onSegmentChange={(segment) => changeSegment(segment, index)}
-          onCreate={(segment, focus) => createSegment(segment, index, focus)}
+          onCreate={(segment, offset = 0) => createSegment(segment, index + offset)}
         />
       ))}
     </div>

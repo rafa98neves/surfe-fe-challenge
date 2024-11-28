@@ -21,18 +21,27 @@ function NotesCreation() {
   const debouncedInputValue = useDebounce(segments, SAVE_DELAY);
 
   const onSegmentChange = (segments: ISegment[]) => {
+    let isUserMention: Boolean
+    let isLastSegment: Boolean
+    let beforeSegment: ISegment | null
+
     const parsedSegment = segments.reduce((acc, segment, index) => {
+      isUserMention = !!segment.userMention;
+      isLastSegment = index === segments.length - 1
+      beforeSegment = acc[index - 1] ?? null
+
       // if the last segment is a mention, add an empty segment
-      if (segment.userMention && index === segments.length - 1) {
+      if (isUserMention && isLastSegment) {
         acc.push(segment)
         acc.push({ text: '' })
-      } else if (segment.text !== '') {
-        if (index && acc[index - 1] && !segment.userMention && !acc[index - 1].userMention) {
-          acc[index - 1].text += segment.text
+      } else {
+        if (!isUserMention && beforeSegment && !beforeSegment.userMention) {
+          beforeSegment.text += segment.text
         } else {
           acc.push(segment)
         }
       }
+
       return acc
     }, [] as ISegment[])
 

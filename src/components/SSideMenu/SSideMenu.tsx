@@ -12,7 +12,6 @@ interface IProps {
     onSelect: (value: string) => void
 }
 
-
 const SSideMenu = (props: IProps) => {
     const { items, onSelect } = props
 
@@ -52,7 +51,7 @@ const SSideMenu = (props: IProps) => {
     ))
 
     return (
-        <div className="absolute left-0 top-10 w-80 border border-t-grey bg-white rounded">
+        <div className="absolute right-0 top-15 w-80 border border-t-grey bg-white rounded">
             <div> {itemComponents} </div>
         </div>
     );

@@ -46,10 +46,10 @@ export default function useTextareaControls() {
     return {
         onClick,
         ...useKeyboard({
-            'Backspace': { action: (e: React.KeyboardEvent) => onMove(e, -1) },
-            'ArrowLeft': { action: (e: React.KeyboardEvent) => onMove(e, -1) },
-            'Delete': { action: (e: React.KeyboardEvent) => onMove(e, 1) },
-            'ArrowRight': { action: (e: React.KeyboardEvent) => onMove(e, 1) }
+            'Backspace': { action: (e) => onMove(e, -1) },
+            'ArrowLeft': { action: (e) => onMove(e, -1) },
+            'Delete': { action: (e) => onMove(e, 1) },
+            'ArrowRight': { action: (e) => onMove(e, 1) },
         })
     };
 }

@@ -15,6 +15,7 @@ export default function useSideMenuControls(props: IProps) {
         'Enter': {
             action: (e) => {
                 onSelect(currentFocus)
+                e.preventDefault()
             },
         },
         'ArrowDown': {
