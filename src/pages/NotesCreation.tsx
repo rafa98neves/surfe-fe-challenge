@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
-import STextarea from "../components/STextarea";
+import STextarea from "../components/STextarea/STextarea";
 import Spinner from "../icons/Spinner";
 import useStore from "../store";
 import { INote, ISegment } from "../types/notes";
@@ -14,10 +14,34 @@ function NotesCreation() {
   const [segments, setSegments] = useState<ISegment[]>([]);
   const [note, setNote] = useState<INote | null>(null);
 
+  const navigate = useNavigate();
+
   const store = useStore()
   const params = useParams()
-  const navigate = useNavigate();
   const debouncedInputValue = useDebounce(segments, SAVE_DELAY);
+
+  const onSegmentChange = (segments: ISegment[]) => {
+    const parsedSegment = segments.reduce((acc, segment, index) => {
+      // if the last segment is a mention, add an empty segment
+      if (segment.userMention && index === segments.length - 1) {
+        acc.push(segment)
+        acc.push({ text: '' })
+      } else if (segment.text !== '') {
+        if (index && acc[index - 1] && !segment.userMention && !acc[index - 1].userMention) {
+          acc[index - 1].text += segment.text
+        } else {
+          acc.push(segment)
+        }
+      }
+      return acc
+    }, [] as ISegment[])
+
+    if (parsedSegment.length === 0) {
+      parsedSegment.push({ text: '' })
+    }
+
+    setSegments(parsedSegment)
+  }
 
   const onChange = async (value: string) => {
     let newNote: INote;
@@ -33,7 +57,7 @@ function NotesCreation() {
   }
 
   useEffect(() => {
-    if (debouncedInputValue) {
+    if (debouncedInputValue.length) {
       const text = transformSegmentsToText(debouncedInputValue)
       onChange(text)
     }
@@ -66,10 +90,9 @@ function NotesCreation() {
 
   return (
     <div className="h-full min-h-96">
-
       <div className="h-full grid grid-rows-10 bg-white rounded-lg pb-2">
         <div className="row-span-9">
-          <STextarea segments={segments} onChange={setSegments} />
+          <STextarea segments={[...segments]} onChange={onSegmentChange} />
         </div>
         {statusMessage}
       </div>

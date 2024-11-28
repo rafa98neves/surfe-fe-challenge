@@ -1,6 +1,11 @@
 import { ISegment } from "../types/notes";
 import { TUserMap } from "../types/users";
 
+/**
+ * Given a sentence and an index, returns the word at that index in the sentence.
+ * The return value is an object with the word, start index, and end index.
+ * If the index is not a valid index in the sentence, returns null.
+ */
 export function getWordFromIndex(sentence: string, index: number) {
     const words = sentence.split(' ');
     let currentIndex = 0;
@@ -18,6 +23,23 @@ export function getWordFromIndex(sentence: string, index: number) {
 
 const MENTION_REGEX = /(\s*@\w+\s*)/g;
 
+/**
+ * Given a sentence and a list of users, returns an array of segments.
+ * A segment is either a string of text, or an object with a string of text
+ * and a user object (from the list of users).
+ *
+ * The function works by iterating over the sentence and finding all matches
+ * of a mention (i.e. a word that starts with '@'). For each match, the function
+ * checks if the word is in the list of users. If it is, the function
+ * adds a segment with the text and user object to the array. If it is not,
+ * the function adds a segment with just the text to the array.
+ *
+ * The array is then filtered to remove any empty segments.
+ *
+ * @param {string} text - The sentence to be processed.
+ * @param {TUserMap} users - The list of users.
+ * @returns {ISegment[]} - An array of segments.
+ */
 export function transformTextToSegments(text: string, users: TUserMap) {
     const segments: ISegment[] = [];
 
@@ -52,13 +74,21 @@ export function transformTextToSegments(text: string, users: TUserMap) {
         segments.push({ text: word });
     }
 
-    if (segments[segments.length - 1].userMention) {
+    if (segments.length === 0 || segments[segments.length - 1].userMention) {
         segments.push({ text: '' })
     }
 
     return segments.filter(Boolean);
 }
 
+/**
+ * Given an array of ISegments, convert them into a single string of text
+ * ISegments with a userMention will be converted to '@username', and all other
+ * ISegments will be converted to the text property with leading and trailing
+ * whitespace removed
+ * @param {ISegment[]} segments An array of ISegments to convert
+ * @return {string} The string of text generated from the segments
+ */
 export function transformSegmentsToText(segments: ISegment[]) {
     let out: string[] = [];
 

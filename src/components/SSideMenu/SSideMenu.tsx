@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import useSideMenuControls from "./SSideMenu.controls";
 
 export interface IItem {
@@ -16,18 +16,24 @@ interface IProps {
 const SSideMenu = (props: IProps) => {
     const { items, onSelect } = props
 
-    const refs = useRef<any[]>([]);
+    const [selected, setSelected] = useState(0)
 
     const controls = useSideMenuControls({
         maxIndex: items.length - 1,
-        onSelect: (idx) => onSelect(items[idx].value),
-        onChange: (idx) => refs.current[idx]?.focus()
+        onSelect: (idx: number) => {
+            onSelect(items[idx].value)
+        },
+        onChange: (idx: number) => {
+            setSelected(idx)
+        }
     })
 
     useEffect(() => {
-        document.addEventListener('keydown', controls.onKeyDown)
+        const reaction = (e: any) => controls.onKeyDown(e);
+
+        document.addEventListener('keydown', reaction)
         return () => {
-            document.removeEventListener('keydown', controls.onKeyDown)
+            document.removeEventListener('keydown', reaction)
         }
     }, [])
 
@@ -35,14 +41,14 @@ const SSideMenu = (props: IProps) => {
 
     const itemComponents = items.map((item, index) => (
         <button
-            ref={(el) => refs.current[index] = el}
             key={item.value}
-            className="justify-items-start focus:bg-gray-200 hover:bg-gray-200 w-full rounded px-2 py-1 cursor-pointer border-none outline-none"
+            className={`justify-items-start hover:bg-gray-200 w-full rounded px-2 py-1 cursor-pointer border-none outline-none ${selected === index ? 'bg-gray-200' : ''}`}
             onClick={() => onSelect(item.value)}
+            onMouseDown={(e) => e.preventDefault()}
         >
             <span className="font-bold">{item.label}</span>
             <div className="text-gray-400"> {item.afterLabel} </div>
-        </button>
+        </button >
     ))
 
     return (

@@ -9,13 +9,12 @@ interface IProps {
 export default function useSideMenuControls(props: IProps) {
     const { maxIndex, onChange, onSelect } = props
 
-    let currentFocus: number;
+    let currentFocus: number = 0;
 
     return useKeyboard({
         'Enter': {
             action: (e) => {
                 onSelect(currentFocus)
-                e.preventDefault()
             },
         },
         'ArrowDown': {
@@ -34,6 +33,7 @@ export default function useSideMenuControls(props: IProps) {
 
                 onChange(currentFocus)
                 e.preventDefault()
+                e.stopPropagation()
             },
         },
     });
