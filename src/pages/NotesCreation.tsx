@@ -80,7 +80,7 @@ function NotesCreation() {
     }
 
     // Fetch new note from ID
-    Promise.all([store.fetchNote(parseInt(params.id)), store.fetchUsers()])
+    Promise.all([store.fetchNote(parseInt(params.id)), store.fetchUsers('', true)])
       .then(([note, users]) => {
         if (note) {
           const segments = transformTextToSegments(note.body, users)
@@ -88,7 +88,7 @@ function NotesCreation() {
           setNote(note)
         }
       })
-  }, [])
+  }, [params.id])
 
   const statusMessage = (
     <div className="flex items-center justify-end text-xs mr-4 min-h-8">
@@ -98,15 +98,15 @@ function NotesCreation() {
   )
 
   return (
-    <div className="h-full min-h-96">
-      <div className="h-full grid grid-rows-10 bg-white rounded-lg pb-2">
+    <div className="flex flex-col flex-grow">
+      <div className="flex-grow grid grid-rows-10 bg-white rounded-lg pb-2">
         <div className="row-span-9">
           <STextarea segments={[...segments]} onChange={onSegmentChange} />
         </div>
         {statusMessage}
       </div>
 
-      <div className="flex items-center justify-end">
+      <div className="flex items-center justify-center">
         <button className="bg-white rounded mt-4">
           <Link className="block px-6 py-1" to="/">Go to your notes</Link>
         </button>

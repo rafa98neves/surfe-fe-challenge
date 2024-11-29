@@ -6,7 +6,7 @@ import { TUserMap } from "../types/users";
 import { useAppDispatch, useAppState } from "./reducers";
 import { ACTION_TYPE } from "./types";
 
-const filterUsers = (users: TUserMap, query: string, size = 5) => {
+const filterUsers = (users: TUserMap, query: string, shouldRetrieveAll = false) => {
     let userArray = Array.from(users.entries());
 
     if (query) {
@@ -15,7 +15,11 @@ const filterUsers = (users: TUserMap, query: string, size = 5) => {
         });
     }
 
-    return new Map(userArray.slice(0, size))
+    if (shouldRetrieveAll) {
+        return new Map(userArray)
+    }
+
+    return new Map(userArray.slice(0, 5))
 }
 
 export default function useStore() {
@@ -74,20 +78,22 @@ export default function useStore() {
 
             const response = await notesService.getNotes();
             dispatch({ type: ACTION_TYPE.SET_NOTES, payload: response });
+            return response
+        } catch (e) {
+            return []
         } finally {
             dispatch({ type: ACTION_TYPE.SET_LOADING, payload: false });
-            return []
         }
     }
 
 
-    const fetchUsers = async (query = '', force = false) => {
+    const fetchUsers = async (query = '', all = false, force = false) => {
 
         dispatch({ type: ACTION_TYPE.SET_LOADING, payload: true });
 
         try {
             if (state.users.size > 0 && !force) {
-                return filterUsers(state.users, query)
+                return filterUsers(state.users, query, all)
             }
 
             const res = await usersService.getUsers();
@@ -95,7 +101,7 @@ export default function useStore() {
 
             dispatch({ type: ACTION_TYPE.SET_USERS, payload: users });
 
-            return filterUsers(users, query)
+            return filterUsers(users, query, all)
 
         } finally {
             dispatch({ type: ACTION_TYPE.SET_LOADING, payload: false });

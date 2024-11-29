@@ -20,7 +20,7 @@ const SSideMenu = (props: IProps) => {
     const controls = useSideMenuControls({
         maxIndex: items.length - 1,
         onSelect: (idx: number) => {
-            onSelect(items[idx].value)
+            onSelect(items[idx]?.value)
         },
         onChange: (idx: number) => {
             setSelected(idx)

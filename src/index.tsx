@@ -17,7 +17,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <StateProvider>
-      <div className="relative min-h-screen overflow-hidden py-8 xl:px-80 md:px-20 px-12">
+      <div className="flex flex-col relative min-h-screen overflow-hidden py-8 xl:px-80 md:px-20 px-12">
         <h3 className="text-slate-50 text-center text-4xl text-title mb-6"> Surfe Notes </h3>
         <BrowserRouter>
           <Routes>

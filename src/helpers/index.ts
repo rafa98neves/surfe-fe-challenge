@@ -104,3 +104,15 @@ export function transformSegmentsToText(segments: ISegment[]) {
     return out.join(' ');
 
 }
+
+/**
+ * Performs a deep clone of the given value. This is useful when you want a
+ * complete copy of an object and don't want any references to the original
+ * data.
+ *
+ * @param {any} value The value to clone
+ * @return {any} The cloned value
+ */
+export function deepClone<T>(value: T): T {
+    return JSON.parse(JSON.stringify(value))
+}

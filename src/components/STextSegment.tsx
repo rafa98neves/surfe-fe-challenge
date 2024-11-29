@@ -53,8 +53,8 @@ function STextSegment(props: IProps) {
     const text = segment.text.slice(wordData.end)
 
     onSegmentChange({ text: segment.text.slice(0, wordData.start) })
-    onCreate(newSegment, 1);
-    onCreate({ text }, 2);
+    onCreate(newSegment);
+    onCreate({ text }, 1);
 
     setVisibleToggle(false)
   }
@@ -84,7 +84,7 @@ function STextSegment(props: IProps) {
         ref={inputRef}
         contentEditable={true}
         id="editable-span"
-        className={`w-full h-full rounded-lg resize-none	h-full focus:outline-none ${segment.userMention ? 'cursor-pointer font-bold text-indigo-500' : ''}`}
+        className={`px-0.5 w-full h-full rounded-lg resize-none	h-full focus:outline-none ${segment.userMention ? 'cursor-pointer font-bold text-indigo-500' : ''}`}
         onInput={(e) => onModelChange(e.currentTarget.innerText ?? '')}
         onBlur={() => setVisibleToggle(false)}
       />
