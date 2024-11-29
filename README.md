@@ -1,46 +1,100 @@
-# Getting Started with Create React App
+# Surfe's Note Taking App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is a simple and interactive note-taking application built with **React**. The app allows users to create and edit notes, as well as tag other users in their notes using a **mention feature**. The mention feature enables real-time tagging of users by typing `@username`, and the app will highlight the mentioned text.
 
-## Available Scripts
+## Features:
+- Create and view notes.
+- Edit notes.
+- Mention other users by typing `@username` in the note body.
+- Real-time highlighting of mentioned users.
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## How to Run the Application
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Follow these steps to set up and run the application locally.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### Prerequisites
 
-### `npm test`
+Before you begin, ensure you have the following installed:
+- [Node.js](https://nodejs.org/) (version 12 or above)
+- [npm](https://www.npmjs.com/) (Node package manager, comes with Node.js)
+- A code editor like [VSCode](https://code.visualstudio.com/).
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 1. Clone the Repository
 
-### `npm run build`
+Start by cloning the repository to your local machine:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```bash
+git clone https://github.com/your-username/note-taking-app.git
+cd note-taking-app
+````
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 2. Add environment variables (optional)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+In order to set up your session you can setup two environment variables:
 
-### `npm run eject`
+```directoy
+src/.env
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+REACT_APP_API_URL=https://challenge.surfe.com
+REACT_APP_SESSION_KEY=surfe-session-token
+````
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+If none are set, the `.env.local` file will added them for you.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### 3. Run the project
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+Simply add in your console:
 
-## Learn More
+```bash
+npm run install
+npm run start
+````
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## App Structure
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+The directory structure looks like this:
+
+```code
+note-taking-app/
+├── public/
+│   ├── index.html
+│   └── ...
+├── src/
+│   ├── components/
+│   │   ├── STextarea/
+│   │   │   └── STextarea.tsx
+│   │   │   
+│   │   ├── STextSegment.tsx
+│   │   ├── SNote.tsx
+│   │   └── ...
+│   ├── composables/
+│   ├── helpers/
+│   ├── icons/
+│   ├── pages/
+│   ├── services/
+│   ├── store/
+│   ├── types/
+│   ├
+│   ├── index.tsx
+│   └── index.css
+├── package.json
+├── README.md
+└── ...
+```
+
+### Key files
+
+- **STextare.tsx**: Responsable to render the text area and manage `Segments` the term for each text fragment that the user adds.
+
+- **STextSegment.tsx**: The Segment itself. It can either be **text** or **a mention**
+
+- **useKeyboard.ts**: A generic composable to handle keyboard events (really important when the user wants to flawlessly move from `Segments` to `Segments`)
+
+- **store/index.ts**: Main file to manage state - it will trigger store mutations and fetch information for the user
+
+## Contributors
+
+**Rafael Neves** - Senior Frontend Developer @Unbabel
+
